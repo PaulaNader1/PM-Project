@@ -24,13 +24,6 @@ app.post('/register', async (req, res) => {
 
   try {
     let user = await User.findOne({ email });
-
-
-app.post('/register', async (req, res) => {
-  const { username, email, password } = req.body;
-
-  try {
-    let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ msg: 'User already exists' });
     }

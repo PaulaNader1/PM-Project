@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./connection-db');
 const User = require('./models/user');
+const cors = require('cors');
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cors()); // Enable CORS for all routes
 
 app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
@@ -23,6 +25,12 @@ app.post('/register', async (req, res) => {
   try {
     let user = await User.findOne({ email });
 
+
+app.post('/register', async (req, res) => {
+  const { username, email, password } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ msg: 'User already exists' });
     }
@@ -35,7 +43,9 @@ app.post('/register', async (req, res) => {
 
     await user.save();
 
+
     res.send('User registered succssfully!');
+
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');

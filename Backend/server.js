@@ -1,96 +1,38 @@
+// server.js
+
 const express = require('express');
-const dotenv = require('dotenv');
-const connectDB = require('./connection-db');
-const User = require('./models/user');
+const mongoose = require('mongoose');
 const cors = require('cors');
-
-dotenv.config();
-
-connectDB().then(() => {
-  console.log('MongoDB connected');
-}).catch(err => {
-  console.log(err);
-  process.exit(1);
-});
+const userRouter = require('./Routes/user');
+const path = require('path');
+require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
+const corsOptions = {
+  origin: 'http://localhost:3001', // Replace with your frontend URL
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use(cors()); // Enable CORS for all routes
 
-app.post('/register', async (req, res) => {
-  const { username, email, password } = req.body;
+// Serve static files from the uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-  try {
-    let user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({ msg: 'User already exists' });
-    }
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+  .then(() => console.log('MongoDB connected'))
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error.message);
+    process.exit(1); // Exit the process with an error
+  });
 
-    user = new User({
-      username,
-      email,
-      password
-    });
+app.use('/api/users', userRouter);
 
-    await user.save();
-
-
-    res.send('User registered succssfully!');
-
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
-  }
-});
-
-// Route to update user profile
-app.put('/profile/:userId', async (req, res) => {
-  const { username, email, bio, avatar } = req.body;
-
-  try {
-    let user = await User.findById(req.params.userId);
-    if (!user) {
-      return res.status(404).json({ msg: 'User not found' });
-    }
-
-    user.username = username || user.username;
-    user.email = email || user.email;
-    user.profile.bio = bio || user.profile.bio;
-    user.profile.avatar = avatar || user.profile.avatar;
-
-    await user.save();
-    res.json(user);
-
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
-  }
-});
-
-//Route to get user profile by ID
-app.get('/profile/:userId', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.userId);
-    if (!user) {
-      return res.status(404).json({ msg: 'User not found' });
-    }
-    res.json(user);
-
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
-  }
-});
-
-
-app.get('/', (req, res) => {
-  res.send('Hello from the backend!');
-});
-
-
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });

@@ -44,6 +44,45 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// Route to update user profile
+app.put('/profile/:userId', async (req, res) => {
+  const { username, email, bio, avatar } = req.body;
+
+  try {
+    let user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    user.username = username || user.username;
+    user.email = email || user.email;
+    user.profile.bio = bio || user.profile.bio;
+    user.profile.avatar = avatar || user.profile.avatar;
+
+    await user.save();
+    res.json(user);
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+//Route to get user profile by ID
+app.get('/profile/:userId', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    res.json(user);
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 app.get('/', (req, res) => {
   res.send('Hello from the backend!');
 });

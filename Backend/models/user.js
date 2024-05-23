@@ -15,7 +15,11 @@ const UserSchema = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    profile: {
+        bio: String, // Add bio field
+        avatar: String, // Add avatar field
+    },
 });
 
 module.exports = mongoose.model('User', UserSchema);

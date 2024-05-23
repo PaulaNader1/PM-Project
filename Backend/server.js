@@ -24,7 +24,6 @@ app.post('/register', async (req, res) => {
 
   try {
     let user = await User.findOne({ email });
-
     if (user) {
       return res.status(400).json({ msg: 'User already exists' });
     }
@@ -37,7 +36,9 @@ app.post('/register', async (req, res) => {
 
     await user.save();
 
-    res.send('User registered successfully!');
+
+    res.send('User registered succssfully!');
+
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
@@ -83,9 +84,12 @@ app.get('/profile/:userId', async (req, res) => {
   }
 });
 
+
 app.get('/', (req, res) => {
   res.send('Hello from the backend!');
 });
+
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

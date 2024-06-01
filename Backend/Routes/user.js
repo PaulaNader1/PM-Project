@@ -1,5 +1,3 @@
-// routes/users.js
-
 const express = require("express");
 const router = express.Router();
 const userController = require("../Controllers/userController");
@@ -21,5 +19,11 @@ router.put('/:id/update', upload.fields([
   { name: 'passportPhoto', maxCount: 1 },
   { name: 'personalPhoto', maxCount: 1 }
 ]), userController.updateProfile);
+
+// Search training centers
+router.get('/training-centers/search', userController.searchTrainingCenters);
+
+// Get training center info
+router.get('/training-centers/:centerID', userController.getTrainingCenterInfo);
 
 module.exports = router;

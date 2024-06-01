@@ -1,6 +1,5 @@
-// controllers/userController.js
-
 const userModel = require("../Models/user");
+const trainingCenterModel = require("../Models/trainingCenterModel"); // Make sure to require the training center model
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
@@ -79,6 +78,32 @@ const userController = {
     } catch (error) {
       console.error("Error updating profile:", error);
       res.status(500).json({ message: "Server error" });
+    }
+  },
+  searchTrainingCenters: async (req, res) => {
+    try {
+      const { location, name } = req.query;
+
+      const query = {};
+      if (location) query.location = new RegExp(location, 'i');
+      if (name) query.name = new RegExp(name, 'i');
+
+      const centers = await trainingCenterModel.find(query);
+      res.status(200).json(centers);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  getTrainingCenterInfo: async (req, res) => {
+    try {
+      const { centerID } = req.params;
+
+      const center = await trainingCenterModel.findOne({ centerID });
+      if (!center) return res.status(404).json({ message: 'Training center not found' });
+
+      res.status(200).json(center);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   }
 };

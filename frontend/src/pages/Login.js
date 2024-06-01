@@ -20,7 +20,7 @@ function Login() {
       console.log(response.data);
       localStorage.setItem('userId', response.data.userId); // Store userId in localStorage
       // Redirect to profile page after successful login
-      navigate('/profile');
+      navigate('/home');
     } catch (error) {
       console.error('Error logging in:', error);
     }

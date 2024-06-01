@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import '../Profile.css'; // Importing CSS for styling
 
 function Profile() {
@@ -13,6 +14,7 @@ function Profile() {
   const [passportID, setPassportID] = useState('');
   const [passportPhoto, setPassportPhoto] = useState('');
   const [personalPhoto, setPersonalPhoto] = useState('');
+  const navigate = useNavigate();
 
   const userId = localStorage.getItem('userId'); // Replace with actual user ID after login
 
@@ -62,6 +64,9 @@ function Profile() {
 
   return (
     <div className="profile-container">
+      <nav className="navbar">
+        <button onClick={() => navigate('/home')}>Home</button>
+      </nav>
       <h2>Profile</h2>
       <form onSubmit={handleUpdate} className="profile-form">
         <div className="form-group">

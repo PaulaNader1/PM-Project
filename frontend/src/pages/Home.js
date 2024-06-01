@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Remove Link as it is not used
 import '../Home.css'; // Importing CSS for styling
 
 function Home() {

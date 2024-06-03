@@ -16,6 +16,7 @@ function SignUp() {
         password
       });
       console.log(response.data);
+      alert("please check your email to verify your account");
       // Redirect to login page after successful signup
       navigate('/login');
     } catch (error) {

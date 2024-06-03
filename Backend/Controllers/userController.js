@@ -22,6 +22,8 @@ const userController = {
         password,
       });
 
+      await newUser.save();
+
 
       // Send verification email
       const transporter = createTransport({

@@ -26,4 +26,6 @@ router.get('/training-centers/search', userController.searchTrainingCenters);
 // Get training center info
 router.get('/training-centers/:centerID', userController.getTrainingCenterInfo);
 
+router.post('/training-centers/booking/:userId', userController.bookSlot);
+
 module.exports = router;

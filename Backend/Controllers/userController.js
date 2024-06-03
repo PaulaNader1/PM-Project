@@ -1,7 +1,8 @@
 const userModel = require("../Models/user");
-const trainingCenterModel = require("../Models/trainingCenterModel"); // Make sure to require the training center model
+const trainingCenterModel = require("../Models/trainingCenterModel");
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
+const mongoose = require('mongoose');
 
 const userController = {
   signUp: async (req, res) => {
@@ -105,7 +106,65 @@ const userController = {
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
-  }
+  },  
+  bookSlot: async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { centerID, slotDate } = req.body;
+  
+
+      const user = await userModel.findById(userId);
+      if (!user) {
+        console.error('User not found');
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      console.log(`Booking slot for centerID: ${centerID}, slotDate: ${slotDate}, userID: ${user._id}`);
+  
+ 
+      const center = await trainingCenterModel.findOne({ centerID });
+      if (!center) {
+        console.error('Training center not found');
+        return res.status(404).json({ message: 'Training center not found' });
+      }
+  
+   
+      const slot = center.slotTimings.find(slot => new Date(slot.date).getTime() === new Date(slotDate).getTime());
+      if (!slot) {
+        console.error('Slot not found');
+        return res.status(404).json({ message: 'Slot not found' });
+      }
+  
+
+      if (slot.bookedCount >= center.maxCapacity) {
+        console.error('No available seats');
+        return res.status(400).json({ message: 'No available seats' });
+      }
+  
+
+      slot.bookedCount += 1;
+  
+     
+      if (!center.bookedUsers) {
+        center.bookedUsers = [];
+      }
+  
+ 
+      let bookedUser = center.bookedUsers.find(bu => new Date(bu.slotTiming.date).getTime() === new Date(slotDate).getTime());
+      if (!bookedUser) {
+        bookedUser = { slotTiming: slot, users: [] };
+        center.bookedUsers.push(bookedUser);
+      }
+  
+      bookedUser.users.push(user._id);
+  
+      await center.save();
+      res.status(200).json({ message: 'Slot booked successfully' });
+    } catch (error) {
+      console.error("Error booking slot:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  },
 };
 
 module.exports = userController;

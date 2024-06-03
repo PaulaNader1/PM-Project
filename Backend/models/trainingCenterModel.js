@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 const slotTimingSchema = new Schema({
   date: {
     type: Date,
-    required: true
+    required: false
   },
   bookedCount: {
     type: Number,

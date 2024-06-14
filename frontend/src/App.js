@@ -7,6 +7,8 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Home from './pages/Home';
 import TrainingCenterDetails from './pages/TrainingCenterDetails';
+import ManagerHome from './pages/ManagerHome';
+import ManagerProfile from './pages/ManagerProfile';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/home" element={<Home />} />
           <Route path="/training-center/:centerID" element={<TrainingCenterDetails />} />
+          <Route path="/manager/home" element={<ManagerHome />} />
+          <Route path="/manager/profile" element={<ManagerProfile />} />
         </Routes>
       </div>
     </Router>

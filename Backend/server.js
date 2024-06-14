@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const userRouter = require('./Routes/user');
+const managerRouter = require('./Routes/manager'); // Add this line
 const path = require('path');
 require('dotenv').config();
 
@@ -31,6 +32,7 @@ mongoose.connect(process.env.MONGO_URI, {
   });
 
 app.use('/api/users', userRouter);
+app.use('/api/managers', managerRouter); // Add this line
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

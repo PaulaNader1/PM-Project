@@ -134,7 +134,7 @@ const userController = {
       const { userId } = req.params;
       const { centerID, slotDate } = req.body;
 
-
+      // Check if the user exists
       const user = await userModel.findById(userId);
       if (!user) {
         console.error('User not found');
@@ -143,36 +143,45 @@ const userController = {
 
       console.log(`Booking slot for centerID: ${centerID}, slotDate: ${slotDate}, userID: ${user._id}`);
 
-
+      // Check if the training center exists
       const center = await trainingCenterModel.findOne({ centerID });
       if (!center) {
         console.error('Training center not found');
         return res.status(404).json({ message: 'Training center not found' });
       }
 
-
+      // Find the slot in the center
       const slot = center.slotTimings.find(slot => new Date(slot.date).getTime() === new Date(slotDate).getTime());
       if (!slot) {
         console.error('Slot not found');
         return res.status(404).json({ message: 'Slot not found' });
       }
 
-
+      // Check if there is an empty seat in the slot
       if (slot.bookedCount >= center.maxCapacity) {
         console.error('No available seats');
         return res.status(400).json({ message: 'No available seats' });
       }
 
+      // Check if the user already has a seat in this slot timing
+      const userAlreadyBooked = center.bookedUsers.some(bu =>
+        new Date(bu.slotTiming.date).getTime() === new Date(slotDate).getTime() &&
+        bu.users.includes(user._id)
+      );
 
-      slot.bookedCount += 1;
-
-
-      if (!center.bookedUsers) {
-        center.bookedUsers = [];
+      if (userAlreadyBooked) {
+        console.error('User already booked in this slot');
+        return res.status(400).json({ message: 'User already booked in this slot' });
       }
 
+      // Increment the bookedCount and add the user to the users array
+      slot.bookedCount += 1;
 
-      let bookedUser = center.bookedUsers.find(bu => new Date(bu.slotTiming.date).getTime() === new Date(slotDate).getTime());
+      // Find the bookedUser entry for this slot or create a new one if it doesn't exist
+      let bookedUser = center.bookedUsers.find(bu =>
+        new Date(bu.slotTiming.date).getTime() === new Date(slotDate).getTime()
+      );
+
       if (!bookedUser) {
         bookedUser = { slotTiming: slot, users: [] };
         center.bookedUsers.push(bookedUser);

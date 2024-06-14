@@ -119,16 +119,16 @@ function Profile() {
         {user.nationality === 'Egyptian' && (
           <>
             <p><strong>ID Number:</strong> {user.idNumber}</p>
-            {user.idPhoto && <img src={`http://localhost:3000/${user.idPhoto}`} alt="User ID" />}
+            {user.idPhoto && <img src={`http://localhost:3000/uploads/${user.idPhoto}`} alt="User ID" />}
           </>
         )}
         {user.nationality === 'Foreign' && (
           <>
             <p><strong>Passport ID:</strong> {user.passportID}</p>
-            {user.passportPhoto && <img src={`http://localhost:3000/${user.passportPhoto}`} alt="User Passport" />}
+            {user.passportPhoto && <img src={`http://localhost:3000/uploads/${user.passportPhoto}`} alt="User Passport" />}
           </>
         )}
-        {user.personalPhoto && <img src={`http://localhost:3000/${user.personalPhoto}`} alt="User Personal" />}
+        {user.personalPhoto && <img src={`http://localhost:3000/uploads/${user.personalPhoto}`} alt="User Personal" />}
       </div>
     </div>
   );

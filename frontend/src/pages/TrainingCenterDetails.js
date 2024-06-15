@@ -2,18 +2,19 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import '../TrainingCenterDetails.css';
 
 function TrainingCenterDetails() {
   const { centerID } = useParams();
   const [center, setCenter] = useState('');
   const userId = localStorage.getItem('userId');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCenterDetails = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/users/training-centers/'+centerID);
+        const response = await axios.get('http://localhost:3000/api/users/training-centers/' + centerID);
         setCenter(response.data);
       } catch (error) {
         console.error('Error fetching training center details:', error);
@@ -22,17 +23,8 @@ function TrainingCenterDetails() {
     fetchCenterDetails();
   }, [centerID]);
 
-  const handleBookSlot = async (slotDate) => {
-    try {
-      const response = await axios.post('http://localhost:3000/api/users/training-centers/booking/'+userId, {
-        centerID,
-        slotDate,
-      });
-      alert(response.data.message);
-    } catch (error) {
-      console.error('Error booking slot:', error);
-      alert('Error booking slot: ' + (error.response?.data?.message || error.message));
-    }
+  const handleBookSlot = (slotDate) => {
+    navigate('/payment', { state: { userId, centerID, slotDate } });
   };
 
   if (!center) {

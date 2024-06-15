@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import TrainingCenterDetails from './pages/TrainingCenterDetails';
 import ManagerHome from './pages/ManagerHome';
 import ManagerProfile from './pages/ManagerProfile';
+import PaymentPage from './pages/PaymentPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/training-center/:centerID" element={<TrainingCenterDetails />} />
           <Route path="/manager/home" element={<ManagerHome />} />
           <Route path="/manager/profile" element={<ManagerProfile />} />
+          <Route path="/payment" element={<PaymentPage />} /> {/* Add this route */}
         </Routes>
       </div>
     </Router>
